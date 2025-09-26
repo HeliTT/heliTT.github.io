@@ -1,87 +1,228 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
-
-<meta charset="UTF-8">
-
-<title> Hanikan ruoka- ja juomatuomiset </title>
-
-<style>
-	body {
-	    font-family: sans-serif;
-	    margin: 20px 40px 20px 40px;
-	    background-color: #b7e1ce;
-	}
-	
-	h1 {
-	    font-size: 24px;
-	}
-
-
-	h2 {
-	    font-size: 20px;
-	    padding: 10px;
-	}
-
-	p {
-	   margin-left: 20px;
-        }
-
-	.free {
-	}
-
-	.taken {
-	    text-decoration: line-through;
-	}
-
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jaksotuspohja – opiskelijan aikatauluttaja</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Libraries for export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
-
 <body>
+  <header>
+    <h1>Jaksotuspohja – opiskelijan aikatauluttaja</h1>
+    <div class="controls">
+      <label>
+        Opiskelijan nimi
+        <input id="studentName" type="text" placeholder="Etunimi Sukunimi" />
+      </label>
+      <button class="btn" id="clearBtn" title="Palauta palikat palettiin">Tyhjennä sijoittelut</button>
+      <button class="btn" id="resetAllBtn" title="Poistaa myös tallennetut tiedot">Nollaa kaikki</button>
+      <button class="btn" id="printBtn" title="Tulosta / tallenna PDF">Tulosta</button>
+      <button class="btn primary" id="downloadPdfBtn">Lataa PDF</button>
+    </div>
+  </header>
 
-<h1> Hanikan ruoka- ja juomatuomiset </h1>
+  <main>
+    <section class="palette">
+      <h2>Kurssit</h2>
+      <div class="legend">Raahaa kurssit oikeaan suoritusajankohtaan.</div>
+      <div id="blockList" class="block-list" aria-label="Palettipalikat">
+        <!-- 20 blocks injected -->
+      </div>
+      <div class="footer-note">Tallennus: selaimen <strong>localStorage</strong> (laite- & selainkohtainen). ”Tyhjennä sijoittelut” palauttaa palikat palettiin.</div>
+    </section>
 
-<p> Valitse listalta, mitä haluat tuoda ja ilmoita siitä Heli Tiitiselle. Kun tuote on yliviivattu, joku on luvannut jo tuoda sen. </p>
+    <section class="canvas">
+      <h2>Jaksot</h2>
+          <div id="captureArea" class="grid-wrap">
+        <table class="grid" role="grid" aria-label="Jaksoruudukko">
+          <thead>
+            <tr>
+              <th class="col-head" data-col="1">Jakso 1</th>
+              <th class="col-head" data-col="2">Jakso 2</th>
+              <th class="col-head" data-col="3">Jakso 3</th>
+              <th class="col-head" data-col="4">Jakso 4</th>
+              <th class="col-head" data-col="5">Jakso 5</th>
+              <th class="col-head" data-col="6">Jakso 6</th>
+            </tr>
+          </thead>
+          <tbody id="gridBody">
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-<h2> Juomat </h2>
+  <script>
+    const STORAGE_KEY = 'jaksotuspohja.v2';
+
+    const blockList = document.getElementById('blockList');
+    const gridBody = document.getElementById('gridBody');
+    const studentNameInput = document.getElementById('studentName');
+
+    function saveState() {
+      const state = { blocks: [], studentName: studentNameInput.value };
+      document.querySelectorAll('.block').forEach(b => {
+        const dz = b.parentElement.closest('.dropzone');
+        state.blocks.push({
+          id: b.dataset.blockId,
+          containerId: dz ? dz.id : 'palette'
+        });
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch { return null; }
+    }
+
+    const blockNames = ["Asiakaspalvelu", "Asiakaspalvelun englanti", "Asiakaspalvelun ruotsi",
+     "Asiakaspalvelun suomi", "Liiketoimintaan perehtyminen", "Työyhteisö", "Digitaalinen työympäristö",
+    "Toiminnan kannattavuus", "YTO viestintä suomi", "YTO englanti", "YTO ruotsi", "YTO toiminta digitaalisessa ympäristössä", 
+    "YTO taide ja luova ilmaisu" , "YTO matematiikka", "YTO fysiikka ja kemia", "YTO Yhteiskunnassa ja kansalaisena toimiminen"]
 
 
-<p class='taken'>limua 14 pulloa (1,5 l plo)</p> 
-<p class='taken'>kivennäisvettä 14 pulloa (1,5 l plo) </p>
-<p class='taken'>pieniä kivennäisvesiä 24 kpl (0,33 l tai pienempiä) </p>
-<p class='taken'>pillimehuja lapsille 30 kpl</p>
+    function makeBlock(id) {
+      const el = document.createElement('div');
+      el.className = 'block';
+      el.draggable = true;
+      el.dataset.blockId = id;
+      el.textContent = blockNames[id-1] || `Palikka ${id}`;
+      // Ei tekstin eikä värin muokkausta -> ei contenteditablea, ei dblclick-värinvaihtoa
 
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', el.dataset.blockId);
+        setTimeout(() => el.style.opacity = '0.6', 0);
+      });
+      el.addEventListener('dragend', () => { el.style.opacity = '1'; saveState(); });
 
-<h2>Suolaiset</h2>
+      return el;
+    }
 
-<p class='free'>ruokaisa salaatti, 2 kpl (gluteeniton ja maidoton, kirjoita lappu! Esim. kirkas perunasalaatti, majoneesipohjainen -tarkista majoneesin maidottomuus - perunasalaatti, vihreä salaatti)</p>
+    function makeDropzone(id) {
+      const dz = document.createElement('div');
+      dz.className = 'dropzone';
+      dz.id = id;
+      dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag-over'); });
+      dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+      dz.addEventListener('drop', (e) => {
+        e.preventDefault(); dz.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const block = document.querySelector(`[data-block-id="${CSS.escape(id)}"]`);
+        if (block) dz.appendChild(block);
+        saveState();
+      });
+      return dz;
+    }
 
-<p class='taken'>ruokaisa salaatti, 4 kpl (esim. pastasalaatti, perunasalaatti)</p>
+    // Rakenna 10 riviä × 6 jaksoa (otsikot ei-muokattavia)
+    for (let r = 1; r <= 10; r++) {
+      const tr = document.createElement('tr');
+    
 
-<p class='taken'>makkarapaketti, 32 kpl</p>
-<p class='taken'>ketsuppipullo</p>
-<p class='taken'>sinappituubi</p>
+      for (let c = 1; c <= 6; c++) {
+        const td = document.createElement('td'); td.className = 'cell';
+        td.appendChild(makeDropzone(`cell-r${r}-c${c}`));
+        tr.appendChild(td);
+      }
+      gridBody.appendChild(tr);
+    }
 
+    // Paletti droppaus paluuta varten
+    blockList.addEventListener('dragover', (e) => { e.preventDefault(); blockList.classList.add('drag-over'); });
+    blockList.addEventListener('dragleave', () => blockList.classList.remove('drag-over'));
+    blockList.addEventListener('drop', (e) => {
+      e.preventDefault(); blockList.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const block = document.querySelector(`[data-block-id="${CSS.escape(id)}"]`);
+      if (block) blockList.appendChild(block);
+      saveState();
+    });
 
-<h2>Makeat</h2>
+    // Luo 20 palikkaa
+    for (let i = 1; i <= 20; i++) blockList.appendChild(makeBlock(i));
 
-<p class='free'>pullia/muffinseja 80 kpl</p>
-<p class='taken'>pullia/muffinseja 40 kpl</p>
-<p class='free'>kuivakakku, gluteeniton 1 kpl</p>
-<p class='taken'>keksejä 6 pkt </p>
-<p class='taken'>gluteenittomia keksejä 2 pkt</p>
+    // Palauta tallennettu tila (vain sijoittelut + nimi)
+    (function restore() {
+      const s = loadState();
+      if (!s) return;
+      if (s.studentName) studentNameInput.value = s.studentName;
+      if (Array.isArray(s.blocks)) {
+        s.blocks.forEach(b => {
+          const el = document.querySelector(`.block[data-block-id="${CSS.escape(b.id)}"]`);
+          if (!el) return;
+          if (b.containerId && b.containerId !== 'palette') {
+            const dz = document.getElementById(b.containerId);
+            if (dz) dz.appendChild(el);
+          } else {
+            blockList.appendChild(el);
+          }
+        });
+      }
+    })();
 
+    // Tallenna nimi muutoksesta
+    studentNameInput.addEventListener('input', saveState);
 
-<h2>Kertakäyttöastioita</h2>
-<p class='taken'>150 lautasta, halkaisija n. 18 cm</p>
-<p class='taken'>150 pahvimukia</p>
-<p class='free'>150 haarukkaa</p>
-<p class='taken'> 1 pkt 2 l pakastepusseja </p>
-<p class='free'> 1 pkt talouspaperia </p>
+    // Tyhjennä sijoittelut = siirrä palikat palettiin
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.querySelectorAll('.block').forEach(b => blockList.appendChild(b));
+      saveState();
+    });
 
-<h2>Yleisiä ohjeita:</h2>
-Valmista kaikki tuotteet laktoosittomina, mikäli mahdollista. Tuothan kaikki tarjottavat tarjoiluvalmiina! Hanikassa ei ole tiskausmahdollisuutta. Voisi olla hyvä myös nimikoida omat kipot ja kupposet. Huolehdithan kuitenkin itse, että lähtiessäsi otat omat astiat mukaan. 
+    // Nollaa kaikki = poista localStorage ja palauta perusnäkymä
+    document.getElementById('resetAllBtn').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      studentNameInput.value = '';
+      document.querySelectorAll('.block').forEach((b,i) => { blockList.appendChild(b); });
+    });
 
+    // Tulostus & PDF
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    async function generatePdfBlob() {
+      const name = (studentNameInput.value || '').trim();
+      const banner = document.createElement('div');
+      banner.className = 'pdf-banner';
+      banner.textContent = name ? `Opiskelija: ${name}` : 'Opiskelija: (nimi)';
+      const captureArea = document.getElementById('captureArea');
+      captureArea.prepend(banner);
+      await new Promise(r => requestAnimationFrame(r));
+      const canvas = await html2canvas(captureArea, { scale: 2, backgroundColor: '#ffffff' });
+      banner.remove();
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+      const w = canvas.width * ratio;
+      const h = canvas.height * ratio;
+      const x = (pageWidth - w) / 2; const y = (pageHeight - h) / 2;
+      pdf.addImage(imgData, 'PNG', x, y, w, h);
+      return pdf.output('blob');
+    }
+
+    document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('downloadPdfBtn');
+      btn.disabled = true; btn.textContent = 'Luodaan PDF…';
+      try {
+        const blob = await generatePdfBlob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const name = (studentNameInput.value || 'jaksotuspohja').replace(/\s+/g,'_');
+        a.href = url; a.download = `${name}.pdf`; a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) { alert('PDF:n luonti epäonnistui. Yritä uudelleen.'); console.error(e); }
+      finally { btn.disabled = false; btn.textContent = 'Lataa PDF'; }
+    });
+  </script>
 </body>
 </html>
