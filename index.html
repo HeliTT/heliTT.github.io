@@ -27,7 +27,7 @@
   <main>
     <section class="palette">
       <h2>Kurssit</h2>
-      <div class="legend">Raahaa kurssit oikeaan suoritusajankohtaan.</div>
+      <div class="legend">Raahaa kurssit haluaamaasi suoritusajankohtaan.</div>
       <div id="blockList" class="block-list" aria-label="Palettipalikat">
         <!-- 20 blocks injected -->
       </div>
@@ -40,12 +40,12 @@
         <table class="grid" role="grid" aria-label="Jaksoruudukko">
           <thead>
             <tr>
-              <th class="col-head" data-col="1" contenteditable>Jakso 1</th>
-              <th class="col-head" data-col="2" contenteditable>Jakso 2</th>
-              <th class="col-head" data-col="3" contenteditable>Jakso 3</th>
-              <th class="col-head" data-col="4" contenteditable>Jakso 4</th>
-              <th class="col-head" data-col="5" contenteditable>Jakso 5</th>
-              <th class="col-head" data-col="6" contenteditable>Jakso 6</th>
+              <th class="col-head" data-col="1" contenteditable>1. jakso</th>
+              <th class="col-head" data-col="2" contenteditable>2. jakso</th>
+              <th class="col-head" data-col="3" contenteditable>3. jakso</th>
+              <th class="col-head" data-col="4" contenteditable>4. jakso</th>
+              <th class="col-head" data-col="5" contenteditable>5. jakso</th>
+              <th class="col-head" data-col="6" contenteditable>6. jakso</th>
             </tr>
           </thead>
           <tbody id="gridBody">
@@ -126,7 +126,7 @@
       return dz;
     }
 
-    // Rakenna 10 riviä × 6 jaksoa (otsikot ei-muokattavia)
+    // Rakenna 10 riviä × 6 jaksoa 
     for (let r = 1; r <= 10; r++) {
       const tr = document.createElement('tr');
     
@@ -196,7 +196,7 @@
       localStorage.removeItem(STORAGE_KEY);
       studentNameInput.value = '';
       document.querySelectorAll('.block').forEach((b,i) => { blockList.appendChild(b); });
-      document.querySelectorAll('.col-head[data-col]').forEach((h, i) => h.innerText = `Jakso ${i+1}`);
+      document.querySelectorAll('.col-head[data-col]').forEach((h, i) => h.innerText = `${i+1}.jakso `);
     });
 
     // Tulostus & PDF
