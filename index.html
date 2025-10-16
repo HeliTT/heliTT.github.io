@@ -92,7 +92,12 @@
     "Toiminnan kannattavuus", "YTO viestintä suomi", "YTO englanti", "YTO ruotsi", "YTO toiminta digitaalisessa ympäristössä", 
     "YTO taide ja luova ilmaisu" , "YTO matematiikka", "YTO fysiikka ja kemia", "YTO Yhteiskunnassa ja kansalaisena toimiminen"]
 
-
+    function getColorClass(id) {
+      if (id <= 8) return 'pakolliset';       // 1–8
+      if (id <= 14) return 'valinnaiset';     // 9–14
+      return 'ytot';                          // 15–29
+    }
+    
     function makeBlock(id) {
       const el = document.createElement('div');
       el.className = 'block';
@@ -101,6 +106,9 @@
       el.textContent = blockNames[id-1] || `Palikka ${id}`;
       // Ei tekstin eikä värin muokkausta -> ei contenteditablea, ei dblclick-värinvaihtoa
 
+       // Lisää väriluokka ryhmän mukaan
+      el.classList.add(getColorClass(id));
+      
       el.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', el.dataset.blockId);
         setTimeout(() => el.style.opacity = '0.6', 0);
@@ -150,8 +158,8 @@
       saveState();
     });
 
-    // Luo 20 palikkaa
-    for (let i = 1; i <= 20; i++) blockList.appendChild(makeBlock(i));
+    // Luo 29 palikkaa
+    for (let i = 1; i <= 29; i++) blockList.appendChild(makeBlock(i));
 
     // Palauta tallennettu tila (vain sijoittelut + nimi + sarakeotsikot)
     (function restore() {
