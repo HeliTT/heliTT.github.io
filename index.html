@@ -40,12 +40,12 @@
         <table class="grid" role="grid" aria-label="Jaksoruudukko">
           <thead>
             <tr>
-              <th class="col-head" data-col="1">Jakso 1</th>
-              <th class="col-head" data-col="2">Jakso 2</th>
-              <th class="col-head" data-col="3">Jakso 3</th>
-              <th class="col-head" data-col="4">Jakso 4</th>
-              <th class="col-head" data-col="5">Jakso 5</th>
-              <th class="col-head" data-col="6">Jakso 6</th>
+              <th class="col-head" data-col="1" contenteditable>Jakso 1</th>
+              <th class="col-head" data-col="2" contenteditable>Jakso 2</th>
+              <th class="col-head" data-col="3" contenteditable>Jakso 3</th>
+              <th class="col-head" data-col="4" contenteditable>Jakso 4</th>
+              <th class="col-head" data-col="5" contenteditable>Jakso 5</th>
+              <th class="col-head" data-col="6" contenteditable>Jakso 6</th>
             </tr>
           </thead>
           <tbody id="gridBody">
@@ -64,13 +64,17 @@
     const studentNameInput = document.getElementById('studentName');
 
     function saveState() {
-      const state = { blocks: [], studentName: studentNameInput.value };
-      document.querySelectorAll('.block').forEach(b => {
-        const dz = b.parentElement.closest('.dropzone');
-        state.blocks.push({
+      const state = { blocks: [], studentName: studentNameInput.value, headers: {} };
+          document.querySelectorAll('.col-head[data-col]').forEach(h => {
+          state.headers[h.dataset.col] = h.innerText.trim();
+          });
+      
+         document.querySelectorAll('.block').forEach(b => {
+          const dz = b.parentElement.closest('.dropzone');
+          state.blocks.push({
           id: b.dataset.blockId,
           containerId: dz ? dz.id : 'palette'
-        });
+           });
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
@@ -149,11 +153,21 @@
     // Luo 20 palikkaa
     for (let i = 1; i <= 20; i++) blockList.appendChild(makeBlock(i));
 
-    // Palauta tallennettu tila (vain sijoittelut + nimi)
+    // Palauta tallennettu tila (vain sijoittelut + nimi + sarakeotsikot)
     (function restore() {
       const s = loadState();
       if (!s) return;
       if (s.studentName) studentNameInput.value = s.studentName;
+
+      // Palauta sarakeotsikot
+        if (s.headers) {
+          Object.entries(s.headers).forEach(([col, text]) => {
+            const h = document.querySelector(`.col-head[data-col="${CSS.escape(col)}"]`);
+            if (h && text) h.innerText = text;
+          });
+        }
+
+       // Palauta palikoiden sijainnit
       if (Array.isArray(s.blocks)) {
         s.blocks.forEach(b => {
           const el = document.querySelector(`.block[data-block-id="${CSS.escape(b.id)}"]`);
@@ -182,10 +196,17 @@
       localStorage.removeItem(STORAGE_KEY);
       studentNameInput.value = '';
       document.querySelectorAll('.block').forEach((b,i) => { blockList.appendChild(b); });
+      document.querySelectorAll('.col-head[data-col]').forEach((h, i) => h.innerText = `Jakso ${i+1}`);
     });
 
     // Tulostus & PDF
     document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    // Tee sarakeotsikoista muokattavat ja tallenna muutokset
+    document.querySelectorAll('.col-head[data-col]').forEach(h => {
+    h.setAttribute('contenteditable', 'true'); // varmistus jos unohdetaan HTML:stä
+    h.addEventListener('input', saveState);
+    });
 
     async function generatePdfBlob() {
       const name = (studentNameInput.value || '').trim();
