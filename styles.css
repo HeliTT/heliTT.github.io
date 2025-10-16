@@ -40,16 +40,14 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
 
 .palette h2, .canvas h2 { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
 
-.block-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: calc(100vh - 220px); overflow: auto; padding-right: 4px; }
-
 .block {
-  background: #9D7DFF; /* violetti */
-  border: 1px solid #1A0530;
-  
   border-radius: 12px; padding: 10px; text-align: center; font-weight: 700; cursor: grab;
   box-shadow: 0 1px 0 rgba(0,0,0,.04);
 
 }
+
+.block-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: calc(100vh - 220px); overflow: auto; padding-right: 4px; }
+
 .block:active { cursor: grabbing; }
 
 .grid-wrap { overflow: auto; }
@@ -75,6 +73,24 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
 .footer-note { color: var(--muted); font-size: 12px; margin-top: 6px; }
 
 .pdf-banner { padding:8px 10px; font-weight:700; border:1px solid var(--border); background:#f9fafb; margin-bottom:8px; border-radius:8px; }
+
+/* Kurssiryhmien värit */
+.block.pakolliset {
+  background: #9D7DFF; /* violetti */
+  border: 1px solid #1A0530;
+}
+
+.block.valinnaiset {
+  background: #d1fae5;   /* vihertävä */
+  border: 1px solid #1A0530;
+}
+
+.block.ytot {
+  background: #ffe4b5;   /* oranssi / vaalea ruskea */
+  border: 1px solid #1A0530;
+  
+}
+
 
 @media print {
   header, .palette, .controls, .footer-note { display: none !important; }
