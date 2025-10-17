@@ -97,7 +97,7 @@
     function getColorClass(id) {
       if (id <= 8) return 'pakolliset';       // 1–8
       if (id <= 14) return 'valinnaiset';     // 9–14
-      return 'ytot';                          // 15–29
+      return 'ytot';                          // 15–31
     }
     
     function makeBlock(id) {
@@ -160,8 +160,8 @@
       saveState();
     });
 
-    // Luo 29 palikkaa
-    for (let i = 1; i <= 29; i++) blockList.appendChild(makeBlock(i));
+    // Luo 31 palikkaa
+    for (let i = 1; i <= 31; i++) blockList.appendChild(makeBlock(i));
 
     // Palauta tallennettu tila (vain sijoittelut + nimi + sarakeotsikot)
     (function restore() {
