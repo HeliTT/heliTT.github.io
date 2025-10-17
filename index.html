@@ -232,13 +232,27 @@
         s.blocks.forEach(b => {
           const el = document.querySelector(`.block[data-block-id="${CSS.escape(b.id)}"]`);
           if (!el) return;
-          if (b.text) el.innerText = b.text; //palautetaan muokatut valinnaisten nimet
+
+        //palautetaan muokatut valinnaisten nimet
+        if (b.text) el.innerText = b.text; 
+
+       // Päivitä data-editable nimen perusteella (jotta CSS-vihjeet toimivat)
+      if (isEditableName(el.innerText)) {
+        el.dataset.editable = "true";
+      } else {
+        el.removeAttribute('data-editable');
+      }
+          
+        //palautetaan sijoittelu
           if (b.containerId && b.containerId !== 'palette') {
             const dz = document.getElementById(b.containerId);
             if (dz) dz.appendChild(el);
           } else {
             blockList.appendChild(el);
           }
+
+      // (valinnainen) jos haluat, että paletit järjestyvät myös restore-jälkeen:
+      // orderPalette();
         });
       }
     })();
