@@ -140,12 +140,49 @@ body, .legend, .footer-note {
   color: #787284; /* liilanharmaa ohjeväri */
 }
 
+.excluded {
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.excluded h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  /* sinulla jo Gothamit: tämä käyttää samoja kuin väliotsikot */
+}
+
+.excluded .legend {
+  margin: 0 0 10px;
+}
+
+#excludedZone.dropzone {
+  min-height: 72px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+  padding: 6px;
+  border-radius: 10px;
+}
+
+/* Sama drag-over-vihje kuin muissa */
+#excludedZone.dropzone.drag-over {
+  outline: 2px dashed var(--primary);
+  outline-offset: 2px;
+  background: #f0f7ff;
+}
 
 @media print {
   header, .palette, .controls, .footer-note { display: none !important; }
   body { background: white; }
   .canvas { border: none; box-shadow: none; }
   .grid { width: 100%; }
+  .excluded {
+    display: none !important;
+  }
 }
 
 /* Kaappauksen ajaksi poistetaan sticky ja scroll */
