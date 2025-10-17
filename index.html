@@ -39,6 +39,7 @@
       <h2>Jaksot</h2>
           <div class="legend">Voit muuttaa otsikot haluamaasi muotoon.</div>
           <div id="captureArea" class="grid-wrap">
+            
         <table class="grid" role="grid" aria-label="Jaksoruudukko">
           <thead>
             <tr>
@@ -55,6 +56,15 @@
           </tbody>
         </table>
       </div>
+
+      <section class="excluded">
+      <h3>Hyväksiluetut / ei kuulu tutkintoon</h3>
+        <p class="legend muted">
+          Raahaa tähän ne kurssit, jotka on hyväksiluettu tai eivät kuulu tutkintoosi.
+       </p>
+      <div id="excludedZone" class="dropzone" aria-label="Hyväksiluetut alue"></div>
+      </section>
+
     </section>
   </main>
 
@@ -183,8 +193,8 @@
         const id = e.dataTransfer.getData('text/plain');
         const block = document.querySelector(`[data-block-id="${CSS.escape(id)}"]`);
 
-        // 🔹 Estetään useampi palikka samassa solussa
-        if (dz.children.length > 0) return;
+        // 🔹 Estetään useampi palikka samassa solussa paitsi hyväksiluetut-alueella
+        if (dz.id !== 'excludedZone' && dz.children.length > 0) return;
 
         if (block) dz.appendChild(block);
         saveState(); // jos sinulla on tallennusfunktio
@@ -270,13 +280,17 @@
 
     // Tyhjennä sijoittelut = siirrä palikat palettiin
     document.getElementById('clearBtn').addEventListener('click', () => {
-      document.querySelectorAll('.block').forEach(b => blockList.appendChild(b));
-      orderPalette();
-      saveState();
+      document.querySelectorAll('.dropzone').forEach(dz => {
+      if (dz.id === 'excludedZone') return; // jätä tämä tyhjentämättä
+      Array.from(dz.children).forEach(b => blockList.appendChild(b));
     });
+    orderPalette?.();
+    saveState?.();
+  });
+
 
     // Nollaa kaikki = poista localStorage ja palauta perusnäkymä
-document.getElementById('resetAllBtn').addEventListener('click', () => {
+  document.getElementById('resetAllBtn').addEventListener('click', () => {
   localStorage.removeItem(STORAGE_KEY);
 
   // Nimi tyhjäksi
