@@ -74,7 +74,7 @@
           const dz = b.parentElement.closest('.dropzone');
           state.blocks.push({
           id: b.dataset.blockId,
-          containerId: dz ? dz.id : 'palette'
+          containerId: dz ? dz.id : 'palette',
           text: b.innerText.trim() //valinnaisten nimet muistiin
            });
       });
@@ -126,9 +126,10 @@
       el.className = 'block';
       el.draggable = true;
       el.dataset.blockId = id;
-      
-      el.textContent = blockNames[id-1] || `Palikka ${id}`;
-      // Ei tekstin eikä värin muokkausta -> ei contenteditablea, ei dblclick-värinvaihtoa
+
+      const defaultName = blockNames[id - 1] || `Palikka ${id}`;
+      el.textContent = defaultName;
+    
 
        // Lisää väriluokka ryhmän mukaan
       el.classList.add(getColorClass(id));
@@ -261,7 +262,7 @@ document.getElementById('resetAllBtn').addEventListener('click', () => {
 
   // Sarakeotsikot takaisin perusarvoihin (muuta omaan formaattiisi)
   document.querySelectorAll('.col-head[data-col]').forEach((h, i) => {
-    h.innerText = `Jakso ${i + 1}`;
+    h.innerText = `${i + 1}. jakso`;
   });
 
   // Siirrä kaikki palikat palettiin, nollaa teksti ja inline-tyylit
