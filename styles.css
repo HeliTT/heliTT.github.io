@@ -50,7 +50,7 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
 
 .block:active { cursor: grabbing; }
 
-.grid-wrap { overflow-x: auto; }
+.grid-wrap { overflow-x: auto; /* sallii vierityksen tarvittaessa */}
 .grid {
   width: auto; /* ei kiinteää leveyttä */
   table-layout: auto; /* tämä sallii solujen mukautua sisällön leveyden mukaan */
@@ -62,7 +62,12 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
   background: white;
 }
 .grid thead th { position: sticky; top: 0; background: #f9fafb; z-index: 2; }
-.grid th, .grid td { padding: 0; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.grid th, .grid td { 
+  padding: 0; 
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  min-width: 140px; /* säädettävä minimileveys */}
+
 .grid th:last-child, .grid td:last-child { border-right: none; }
 
 .col-head { padding: 10px 8px; font-weight: 700; font-size: 14px; text-align: center; }
