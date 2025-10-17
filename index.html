@@ -299,10 +299,11 @@
 
     // Nollaa kaikki = poista localStorage ja palauta perusnäkymä
   document.getElementById('resetAllBtn').addEventListener('click', () => {
-  localStorage.removeItem(STORAGE_KEY);
+    if (!confirm('Haluatko nollata kaikki? Tämä poistaa selaimen välimuistiin tallennetut tiedot.')) return;
+    localStorage.removeItem(STORAGE_KEY);
 
-  // Nimi tyhjäksi
-  studentNameInput.value = '';
+    // Nimi tyhjäksi
+    studentNameInput.value = '';
 
   // Sarakeotsikot takaisin perusarvoihin (muuta omaan formaattiisi)
   document.querySelectorAll('.col-head[data-col]').forEach((h, i) => {
