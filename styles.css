@@ -91,6 +91,13 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
   
 }
 
+.block[data-editable="true"] {
+  cursor: text;
+  outline: 2px dashed transparent;
+}
+.block[data-editable="true"]:hover {
+  outline-color: rgba(0,0,0,.08);
+}
 
 @media print {
   header, .palette, .controls, .footer-note { display: none !important; }
