@@ -99,6 +99,33 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
   outline-color: rgba(0,0,0,.08);
 }
 
+/* --- FONTIT --- */
+
+/* Pääotsikko (h1) */
+h1 {
+  font-family: "Gotham Bold", "Gotham", "Helvetica Neue", Arial, sans-serif;
+  color: #1A0530; /* tumma liila, brändin pääväri */
+}
+
+/* Väliotsikot (h2, h3, h4) */
+h2, h3, h4 {
+  font-family: "Gotham Medium", "Gotham", "Helvetica Neue", Arial, sans-serif;
+  color: #1A0530;
+}
+
+/* Leipäteksti ja ohjetekstit */
+body, .legend, .footer-note, .controls label, input, button {
+  font-family: "Gotham Book", "Gotham", "Helvetica Neue", Arial, sans-serif;
+  color: #787284; /* liilanharmaa ohjeväri */
+}
+
+/*Ohjetekstit */
+body, .legend, .footer-note {
+  font-family: "Gotham Light", "Gotham", "Helvetica Neue", Arial, sans-serif;
+  color: #787284; /* liilanharmaa ohjeväri */
+}
+
+
 @media print {
   header, .palette, .controls, .footer-note { display: none !important; }
   body { background: white; }
