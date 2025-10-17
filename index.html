@@ -357,6 +357,13 @@ document.getElementById('resetAllBtn').addEventListener('click', () => {
       //Kaappauksen valmistelu: lukitse leveydet + poista sticky/scroll
       beginCaptureMode();
       const unlock = lockColumnWidths();
+
+      await document.fonts?.ready;                      // varmistetaan fonttimittaus
+      const wrap = document.querySelector('.grid-wrap');
+      const sx = wrap?.scrollLeft ?? 0, sy = wrap?.scrollTop ?? 0;
+      if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; } // nollaa vaakaskrolli
+      window.scrollTo(0, 0);                               // varmuudeksi myös sivuscroll
+
       
       await new Promise(r => requestAnimationFrame(r));
       const canvas = await html2canvas(captureArea, {
@@ -371,6 +378,9 @@ document.getElementById('resetAllBtn').addEventListener('click', () => {
       //Palauta normaalit tilat
       unlock();
       endCaptureMode();
+
+      if (wrap) { wrap.scrollLeft = sx; wrap.scrollTop = sy; }
+      
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
