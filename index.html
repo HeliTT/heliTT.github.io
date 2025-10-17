@@ -62,7 +62,7 @@
         <p class="legend muted">
           Raahaa tähän ne kurssit, jotka on hyväksiluettu tai eivät kuulu tutkintoosi.
        </p>
-      <div id="excludedZone" class="dropzone" aria-label="Hyväksiluetut alue"></div>
+      <div id="excludedZone" class="dropzone" aria-label="Hyväksiluetut alue" data-multi="true"></div>
       </section>
 
     </section>
@@ -193,7 +193,7 @@
         const id = e.dataTransfer.getData('text/plain');
         const block = document.querySelector(`[data-block-id="${CSS.escape(id)}"]`);
 
-        // 🔹 Estetään useampi palikka samassa solussa paitsi hyväksiluetut-alueella
+        //Estetään useampi palikka samassa solussa paitsi hyväksiluetut-alueella
         if (dz.id !== 'excludedZone' && dz.children.length > 0) return;
 
         if (block) dz.appendChild(block);
@@ -215,6 +215,10 @@
       }
       gridBody.appendChild(tr);
     }
+
+    //Tämän jälkeen lisää excludedZone/hyväksilukualue mukaan
+      const excludedZone = document.getElementById('excludedZone');
+      if (excludedZone) makeDropzone('excludedZone', { multi: true }); // salli useampi
 
     // Paletti droppaus paluuta varten
     blockList.addEventListener('dragover', (e) => { e.preventDefault(); blockList.classList.add('drag-over'); });
