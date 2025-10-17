@@ -76,18 +76,20 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
 
 /* Kurssiryhmien värit */
 .block.pakolliset {
-  background: #E8E3F9;   /* vaalea laventeli */
-  border-color: #9D7DFF; /* kirkas liila reuna */
+  background: #D3C6F7;   /* kirkkaampi laventeli */
+  border-color: #9D7DFF; /* kirkas liila korostus */
   color: #000000;
 }
+
 .block.valinnaiset {
-  background: #F7F6F8;   /* vaalea harmaa */
-  border-color: #787284;
+  background: #E6E4EA;   /* viileä vaaleanharmaa, liilaan taittava */
+  border-color: #787284; /* neutraali liilanharmaa reuna */
   color: #000000;
 }
+
 .block.ytot {
-  background: #F5EFD2;   /* vaalea kultainen sävy */
-  border-color: #BBA53D;
+  background: #F0E4A8;   /* vaalea mutta selkeä kultainen */
+  border-color: #BBA53D; /* kultainen korostus */
   color: #000000;
 }
 
