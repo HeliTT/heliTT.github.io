@@ -175,18 +175,25 @@
       dz.id = id;
       dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag-over'); });
       dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+     
       dz.addEventListener('drop', (e) => {
-        e.preventDefault(); dz.classList.remove('drag-over');
+        e.preventDefault();
+        dz.classList.remove('drag-over');
         const id = e.dataTransfer.getData('text/plain');
         const block = document.querySelector(`[data-block-id="${CSS.escape(id)}"]`);
+
+        // 🔹 Estetään useampi palikka samassa solussa
+        if (dz.children.length > 0) return;
+
         if (block) dz.appendChild(block);
-        saveState();
+        saveState(); // jos sinulla on tallennusfunktio
       });
+      
       return dz;
     }
 
-    // Rakenna 10 riviä × 6 jaksoa 
-    for (let r = 1; r <= 10; r++) {
+    // Rakenna 8 riviä × 6 jaksoa 
+    for (let r = 1; r <= 8; r++) {
       const tr = document.createElement('tr');
     
 
