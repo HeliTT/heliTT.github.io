@@ -66,7 +66,9 @@ main { display: grid; grid-template-columns: 1fr 3fr; gap: 16px; padding: 16px; 
   padding: 0; 
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  min-width: 140px; /* säädettävä minimileveys */}
+  min-width: 140px; /* säädettävä minimileveys */
+  box-sizing: border-box; /* varmistus, vaikka * jo asettaa */
+}
 
 .grid th:last-child, .grid td:last-child { border-right: none; }
 
@@ -149,3 +151,5 @@ body, .legend, .footer-note {
 /* Kaappauksen ajaksi poistetaan sticky ja scroll */
 .capture .grid thead th { position: static !important; }    /* ei stickyä */
 .capture .grid-wrap { overflow: visible !important; }        /* ei scrollia */
+.capture .grid { table-layout: fixed !important; } /* estää auto-uudelleenlaskennan kaappauksen aikana */
+
