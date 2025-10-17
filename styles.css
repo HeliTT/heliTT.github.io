@@ -145,3 +145,7 @@ body, .legend, .footer-note {
   .canvas { border: none; box-shadow: none; }
   .grid { width: 100%; }
 }
+
+/* Kaappauksen ajaksi poistetaan sticky ja scroll */
+.capture .grid thead th { position: static !important; }    /* ei stickyä */
+.capture .grid-wrap { overflow: visible !important; }        /* ei scrollia */
