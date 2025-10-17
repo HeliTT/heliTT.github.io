@@ -100,6 +100,22 @@
       return 'ytot';                          // 15–31
     }
     
+    function groupOrder(cls) {
+      return cls === 'pakolliset' ? 0 : cls === 'valinnaiset' ? 1 : 2;
+    }
+    
+    function paletteSortKey(el) {
+      const id = Number(el.dataset.blockId);
+      const grp = getColorClass(id);
+      return groupOrder(grp) * 1000 + id; // ryhmä ensin, sitten id
+    }
+    
+    function orderPalette() {
+      const blocks = Array.from(blockList.querySelectorAll('.block'));
+      blocks.sort((a, b) => paletteSortKey(a) - paletteSortKey(b));
+      blocks.forEach(b => blockList.appendChild(b)); // append siirtää oikeaan järjestykseen
+    }
+
     function makeBlock(id) {
       const el = document.createElement('div');
       el.className = 'block';
@@ -198,6 +214,7 @@
     // Tyhjennä sijoittelut = siirrä palikat palettiin
     document.getElementById('clearBtn').addEventListener('click', () => {
       document.querySelectorAll('.block').forEach(b => blockList.appendChild(b));
+      orderPalette();
       saveState();
     });
 
