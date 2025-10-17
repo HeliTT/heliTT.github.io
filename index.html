@@ -312,6 +312,40 @@ document.getElementById('resetAllBtn').addEventListener('click', () => {
     h.addEventListener('input', saveState);
     });
 
+    //Lukitaan leveydet pdf:ää varten
+    function lockColumnWidths() {
+      const table = document.querySelector('.grid');
+      if (!table) return () => {};
+    
+      const ths = Array.from(table.querySelectorAll('thead th'));
+      const rows = Array.from(table.tBodies[0]?.rows || []);
+      const widths = ths.map(th => th.getBoundingClientRect().width);
+    
+      // Lukitaan leveydet theadissa
+      ths.forEach((th, i) => { th.style.width = widths[i] + 'px'; });
+    
+      // Lukitaan leveydet jokaisessa rivissä
+      rows.forEach(row => {
+        Array.from(row.cells).forEach((td, i) => {
+          td.style.width = widths[i] + 'px';
+        });
+      });
+    
+      // Palautus-funktio
+      return () => {
+        ths.forEach(th => th.style.width = '');
+        rows.forEach(row => Array.from(row.cells).forEach(td => td.style.width = ''));
+      };
+    }
+    
+    function beginCaptureMode() {
+      document.body.classList.add('capture');
+    }
+    function endCaptureMode() {
+      document.body.classList.remove('capture');
+    }
+
+    
     async function generatePdfBlob() {
       const name = (studentNameInput.value || '').trim();
       const banner = document.createElement('div');
@@ -319,9 +353,24 @@ document.getElementById('resetAllBtn').addEventListener('click', () => {
       banner.textContent = name ? `Opiskelija: ${name}` : 'Opiskelija: (nimi)';
       const captureArea = document.getElementById('captureArea');
       captureArea.prepend(banner);
+      
+      //Kaappauksen valmistelu: lukitse leveydet + poista sticky/scroll
+      beginCaptureMode();
+      const unlock = lockColumnWidths();
+      
       await new Promise(r => requestAnimationFrame(r));
-      const canvas = await html2canvas(captureArea, { scale: 2, backgroundColor: '#ffffff' });
+      const canvas = await html2canvas(captureArea, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: -window.scrollY
+      });
+      
       banner.remove();
+       
+      //Palauta normaalit tilat
+      unlock();
+      endCaptureMode();
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
