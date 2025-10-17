@@ -181,9 +181,13 @@
     }
 
     function makeDropzone(id) {
-      const dz = document.createElement('div');
-      dz.className = 'dropzone';
-      dz.id = id;
+      let dz = document.getElementById(id);
+      if (!dz) {                      // jos ei ole valmista elementtiä, luodaan uusi
+        dz = document.createElement('div');
+        dz.id = id;
+     }
+     dz.classList.add('dropzone');
+      
       dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag-over'); });
       dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
      
@@ -218,7 +222,7 @@
 
     //Tämän jälkeen lisää excludedZone/hyväksilukualue mukaan
       const excludedZone = document.getElementById('excludedZone');
-      if (excludedZone) makeDropzone('excludedZone', { multi: true }); // salli useampi
+      if (excludedZone) makeDropzone('excludedZone'); // salli useampi, ks. ehto dropissa
 
     // Paletti droppaus paluuta varten
     blockList.addEventListener('dragover', (e) => { e.preventDefault(); blockList.classList.add('drag-over'); });
