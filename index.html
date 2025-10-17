@@ -178,6 +178,7 @@
 
     // Luo 31 palikkaa
     for (let i = 1; i <= 31; i++) blockList.appendChild(makeBlock(i));
+    orderPalette();
 
     // Palauta tallennettu tila (vain sijoittelut + nimi + sarakeotsikot)
     (function restore() {
@@ -224,6 +225,7 @@
       studentNameInput.value = '';
       document.querySelectorAll('.block').forEach((b,i) => { blockList.appendChild(b); });
       document.querySelectorAll('.col-head[data-col]').forEach((h, i) => h.innerText = `${i+1}.jakso `);
+      orderPalette();
     });
 
     // Tulostus & PDF
