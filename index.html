@@ -220,13 +220,33 @@
     });
 
     // Nollaa kaikki = poista localStorage ja palauta perusnäkymä
-    document.getElementById('resetAllBtn').addEventListener('click', () => {
-      localStorage.removeItem(STORAGE_KEY);
-      studentNameInput.value = '';
-      document.querySelectorAll('.block').forEach((b,i) => { blockList.appendChild(b); });
-      document.querySelectorAll('.col-head[data-col]').forEach((h, i) => h.innerText = `${i+1}.jakso `);
-      orderPalette();
-    });
+document.getElementById('resetAllBtn').addEventListener('click', () => {
+  localStorage.removeItem(STORAGE_KEY);
+
+  // Nimi tyhjäksi
+  studentNameInput.value = '';
+
+  // Sarakeotsikot takaisin perusarvoihin (muuta omaan formaattiisi)
+  document.querySelectorAll('.col-head[data-col]').forEach((h, i) => {
+    h.innerText = `Jakso ${i + 1}`;
+  });
+
+  // Siirrä kaikki palikat palettiin, nollaa teksti ja inline-tyylit
+  const blocks = Array.from(document.querySelectorAll('.block'));
+  blocks.forEach((b) => {
+    const id = Number(b.dataset.blockId);
+    // Palauta oletusnimi (tai jätä väliin, jos haluat säilyttää opiskelijan nimeämät)
+    b.textContent = blockNames[id - 1] || `Palikka ${id}`;
+    b.removeAttribute('style'); // poistaa esim. aiemman opacity/background
+    blockList.appendChild(b);
+  });
+
+  // Järjestä seuraavassa ruudunpäivityksessä (varmistaa, että DOM-siirrot on tehty)
+  requestAnimationFrame(() => {
+    orderPalette();
+    saveState();
+  });
+});
 
     // Tulostus & PDF
     document.getElementById('printBtn').addEventListener('click', () => window.print());
